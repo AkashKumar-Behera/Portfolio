@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Portfolio Project Manager</title>
+  <style>
+    :root{--bg:#09090b;--card:#151518;--line:#2a2a31;--text:#f5f5f5;--muted:#a1a1aa;--accent:#a78bfa}
+    *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:15px/1.5 Inter,system-ui,sans-serif}.wrap{width:min(920px,calc(100% - 32px));margin:0 auto;padding:44px 0 70px}a{color:var(--accent)}h1{font-size:clamp(32px,5vw,52px);line-height:1.05;letter-spacing:-.05em;margin:8px 0 12px}h2{font-size:22px;margin:0 0 16px}.eyebrow{color:var(--accent);font-size:12px;font-weight:700;letter-spacing:.13em;text-transform:uppercase}.note{color:var(--muted);max-width:680px;margin-bottom:28px}.panel,.project-row{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px;margin-top:18px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}label{display:block;color:var(--muted);font-size:13px;margin-bottom:5px}input,textarea{width:100%;background:#0f0f12;color:var(--text);border:1px solid var(--line);border-radius:8px;padding:11px;font:inherit}textarea{min-height:92px;resize:vertical}.full{grid-column:1/-1}.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}.btn{border:1px solid var(--line);background:transparent;color:var(--text);border-radius:8px;padding:10px 14px;cursor:pointer;font:inherit}.btn.primary{background:var(--text);border-color:var(--text);color:#0b0b0c;font-weight:700}.btn.danger{color:#fca5a5}.project-row{display:flex;justify-content:space-between;gap:18px;align-items:flex-start}.project-row p{color:var(--muted);margin:5px 0 0}.project-row small{color:var(--accent)}.empty{color:var(--muted);padding:18px 0}@media(max-width:650px){.grid{grid-template-columns:1fr}.full{grid-column:auto}.project-row{display:block}.project-row .actions{margin-top:12px}}
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <div class="eyebrow">Private project manager</div>
+    <h1>Add and manage projects.</h1>
+    <p class="note">This page works completely in your browser. It cannot edit files on GitHub directly, so use “Download projects.js” and replace the existing file in your repository before publishing.</p>
+
+    <section class="panel">
+      <h2 id="formTitle">Add a project</h2>
+      <form id="projectForm" class="grid">
+        <input type="hidden" id="projectId">
+        <div><label for="name">Project name *</label><input id="name" required placeholder="e.g. Study Together"></div>
+        <div><label for="tags">Tech stack *</label><input id="tags" required placeholder="React, Node.js, Firebase"></div>
+        <div class="full"><label for="description">Short description *</label><textarea id="description" required placeholder="One or two lines for the project card"></textarea></div>
+        <div class="full"><label for="details">Detailed description</label><textarea id="details" placeholder="What did you build? What problem does it solve?"></textarea></div>
+        <div><label for="github">GitHub URL</label><input id="github" type="url" placeholder="https://github.com/..."></div>
+        <div><label for="live">Live preview URL</label><input id="live" type="url" placeholder="https://..."></div>
+        <div class="full"><label for="images">Image paths or URLs (comma separated)</label><input id="images" placeholder="images/project.png, https://..."></div>
+        <div class="full actions"><button class="btn primary" type="submit">Save project</button><button class="btn" type="button" id="resetBtn">Clear form</button></div>
+      </form>
+    </section>
+
+    <section class="panel"><h2>Your projects</h2><div id="projectList"></div><div class="actions"><button class="btn primary" id="downloadBtn">Download projects.js</button><button class="btn" id="copyBtn">Copy generated code</button><button class="btn danger" id="clearBtn">Reset to original projects</button></div></section>
+  </main>
+  <script src="projects.js"></script>
+  <script>
+    const originalProjects = JSON.parse(JSON.stringify(projects));
+    const storageKey = 'akash-portfolio-projects';
+    let items = JSON.parse(localStorage.getItem(storageKey) || 'null') || originalProjects;
+    const $ = id => document.getElementById(id);
+    const fields = ['name','tags','description','details','github','live','images'];
+
+    function saveLocal(){ localStorage.setItem(storageKey, JSON.stringify(items)); }
+    function render(){
+      $('projectList').innerHTML = items.length ? items.map((p,i) => `<div class="project-row"><div><small>${String(i+1).padStart(2,'0')}</small><h3>${escapeHtml(p.name)}</h3><p>${escapeHtml(p.description)}</p></div><div class="actions"><button class="btn" data-edit="${p.id}">Edit</button><button class="btn danger" data-delete="${p.id}">Delete</button></div></div>`).join('') : '<div class="empty">No projects yet. Add your first one above.</div>';
+      document.querySelectorAll('[data-edit]').forEach(btn => btn.onclick = () => edit(btn.dataset.edit));
+      document.querySelectorAll('[data-delete]').forEach(btn => btn.onclick = () => { items = items.filter(p => p.id !== btn.dataset.delete); saveLocal(); render(); });
+    }
+    function escapeHtml(value){ return String(value || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c])); }
+    function edit(id){ const p = items.find(item => item.id === id); if(!p) return; $('projectId').value=p.id; fields.forEach(key => $(key).value=Array.isArray(p[key]) ? p[key].join(', ') : (p[key] || '')); $('formTitle').textContent='Edit a project'; window.scrollTo({top:0,behavior:'smooth'}); }
+    function clearForm(){ $('projectForm').reset(); $('projectId').value=''; $('formTitle').textContent='Add a project'; }
+    function generated(){ return '/* Generated by admin.html */\nconst projects = ' + JSON.stringify(items, null, 2) + ';\n'; }
+    $('projectForm').onsubmit = event => { event.preventDefault(); const name=$('name').value.trim(); const id=$('projectId').value || name.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'') + '-' + Date.now().toString(36); const project={id,name,description:$('description').value.trim(),details:$('details').value.trim(),tags:$('tags').value.split(',').map(x=>x.trim()).filter(Boolean),images:$('images').value.split(',').map(x=>x.trim()).filter(Boolean),github:$('github').value.trim(),live:$('live').value.trim()}; const index=items.findIndex(p=>p.id===id); if(index>=0) items[index]=project; else items.push(project); saveLocal(); clearForm(); render(); };
+    $('resetBtn').onclick=clearForm;
+    $('downloadBtn').onclick=()=>{ const blob=new Blob([generated()],{type:'text/javascript'}); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='projects.js'; a.click(); URL.revokeObjectURL(a.href); };
+    $('copyBtn').onclick=async()=>{ await navigator.clipboard.writeText(generated()); $('copyBtn').textContent='Copied!'; setTimeout(()=>$('copyBtn').textContent='Copy generated code',1500); };
+    $('clearBtn').onclick=()=>{ if(confirm('Reset local projects to the original list?')){items=JSON.parse(JSON.stringify(originalProjects));saveLocal();render();} };
+    render();
+  </script>
+</body>
+</html>
