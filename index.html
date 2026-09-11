@@ -169,68 +169,10 @@
     </div>
   </footer>
 
-  <!-- Project Details Modal -->
-  <div class="modal-overlay" id="projectModal" aria-hidden="true" role="dialog" aria-labelledby="modalTitle">
-    <div class="modal-card">
-      <div class="modal-header">
-        <div class="modal-header-info">
-          <span class="modal-tag">Featured Project</span>
-          <h3 id="modalTitle">Instagram Downloader Tool</h3>
-        </div>
-        <button class="modal-close" id="modalCloseBtn" aria-label="Close modal">&times;</button>
-      </div>
-
-      <div class="modal-body">
-        <p class="modal-description">
-          A full-featured Instagram media fetching and downloading tool built to effortlessly fetch, preview, and download Reels, Carousels, and high-resolution posts from any public Instagram account without requiring personal logins.
-        </p>
-
-        <!-- Project Images Gallery -->
-        <div class="modal-gallery">
-          <div class="gallery-item main-preview">
-            <div class="gallery-caption">Application UI & Media Extractor Interface</div>
-            <img src="image%20copy.png" alt="Instagram Downloader UI Screenshot" loading="lazy">
-          </div>
-          <div class="gallery-item author-preview">
-            <div class="gallery-caption">Developer / Project Avatar</div>
-            <img src="186453160.jpg" alt="Developer Avatar" loading="lazy">
-          </div>
-        </div>
-
-        <div class="modal-features-grid">
-          <div class="feature-item">
-            <h4>⚡ Multi-Format Media Support</h4>
-            <p>Supports single photos, high-bitrate video reels, carousel galleries, and IGTV posts seamlessly.</p>
-          </div>
-          <div class="feature-item">
-            <h4>🛡️ Zero Login Requirement</h4>
-            <p>Accesses public API endpoints and metadata parsers cleanly without risking personal credentials.</p>
-          </div>
-          <div class="feature-item">
-            <h4>🎯 1-Click Instant Download</h4>
-            <p>Direct download links generated with original quality preservation and clean filenames.</p>
-          </div>
-          <div class="feature-item">
-            <h4>📱 Modern Dark Interface</h4>
-            <p>Responsive glassmorphism UI with real-time fetch feedback and gallery preview.</p>
-          </div>
-        </div>
-
-        <div class="modal-footer-actions">
-          <a class="btn primary" href="https://github.com/AkashKumar-Behera/Instagram-Downloader" target="_blank" rel="noreferrer">
-            View Source Code on GitHub ↗
-          </a>
-          <button class="btn" id="modalCloseActionBtn">Close</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
   <script src="projects.js"></script>
   <script>
-    const modal = document.getElementById('projectModal');
     const projectsGrid = document.getElementById('projectsGrid');
-    const closeBtn = document.getElementById('modalCloseBtn');
+    const portfolioProjects = JSON.parse(localStorage.getItem('akash-portfolio-projects') || 'null') || projects;
     const menuToggle = document.getElementById('menuToggle');
     const navLinks = document.getElementById('navLinks');
 
@@ -281,7 +223,7 @@
     }).join('');
 
     function renderProjects() {
-      projectsGrid.innerHTML = projects.map((project, index) => `
+      projectsGrid.innerHTML = portfolioProjects.map((project, index) => `
         <article class="project project-clickable" data-project="${project.id}" tabindex="0" role="button" aria-label="View ${project.name} details">
           <div>
             <div class="project-header">
@@ -291,7 +233,7 @@
                 ${project.github ? `<a class="project-link" href="${project.github}" target="_blank" rel="noreferrer" onclick="event.stopPropagation();">GitHub ↗</a>` : ''}
               </div>
             </div>
-            <h3>${project.name}</h3>
+            <h3 class="project-title">${project.icon ? `<img class="project-card-icon" src="${project.icon}" alt="${project.name} app icon">` : ''}<span>${project.name}</span></h3>
             <p>${project.description}</p>
           </div>
           <div class="project-footer-row">
@@ -301,50 +243,18 @@
         </article>`).join('');
 
       projectsGrid.querySelectorAll('.project').forEach(card => {
-        const project = projects.find(item => item.id === card.dataset.project);
-        card.addEventListener('click', () => openModal(project));
+        const project = portfolioProjects.find(item => item.id === card.dataset.project);
+        card.addEventListener('click', () => {
+          window.location.href = `project.html?id=${encodeURIComponent(project.id)}`;
+        });
         card.addEventListener('keydown', event => {
           if (event.key === 'Enter' || event.key === ' ') {
             event.preventDefault();
-            openModal(project);
+            window.location.href = `project.html?id=${encodeURIComponent(project.id)}`;
           }
         });
       });
     }
-
-    function openModal(project) {
-      document.getElementById('modalTitle').textContent = project.name;
-      document.querySelector('.modal-description').textContent = project.details || project.description;
-      document.querySelector('.modal-gallery').innerHTML = project.images.length
-        ? project.images.map(image => `<div class="gallery-item main-preview"><div class="gallery-caption">Project preview</div><img src="${image}" alt="${project.name} preview" loading="lazy"></div>`).join('')
-        : '<div class="empty-gallery">Add project images from <code>admin.html</code> to show previews here.</div>';
-      document.querySelector('.modal-footer-actions').innerHTML = `
-        ${project.github ? `<a class="btn primary" href="${project.github}" target="_blank" rel="noreferrer">View Source Code on GitHub ↗</a>` : ''}
-        ${project.live ? `<a class="btn" href="${project.live}" target="_blank" rel="noreferrer">Live Preview ↗</a>` : ''}
-        <button class="btn" id="modalCloseActionBtn">Close</button>`;
-      document.getElementById('modalCloseActionBtn').addEventListener('click', closeModal);
-      modal.classList.add('active');
-      modal.setAttribute('aria-hidden', 'false');
-      document.body.style.overflow = 'hidden';
-    }
-
-    function closeModal() {
-      modal.classList.remove('active');
-      modal.setAttribute('aria-hidden', 'true');
-      document.body.style.overflow = '';
-    }
-
-    if (closeBtn) closeBtn.addEventListener('click', closeModal);
-
-    modal.addEventListener('click', (e) => {
-      if (e.target === modal) closeModal();
-    });
-
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && modal.classList.contains('active')) {
-        closeModal();
-      }
-    });
 
     renderProjects();
   </script>

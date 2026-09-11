@@ -10,8 +10,8 @@
 <body class="project-detail-page">
   <nav>
     <div class="container nav-inner">
-      <a class="logo" href="preview.html">Akash<span>.</span></a>
-      <a class="btn nav-back" href="preview.html#projects">← Back to projects</a>
+      <a class="logo" href="index.html">Akash<span>.</span></a>
+      <a class="btn nav-back" href="index.html#projects">← Back to projects</a>
     </div>
   </nav>
 
@@ -19,19 +19,20 @@
 
   <script src="projects.js"></script>
   <script>
-    const project = projects.find(item => item.id === new URLSearchParams(window.location.search).get('id'));
+    const portfolioProjects = JSON.parse(localStorage.getItem('akash-portfolio-projects') || 'null') || projects;
+    const project = portfolioProjects.find(item => item.id === new URLSearchParams(window.location.search).get('id'));
     const detail = document.getElementById('projectDetail');
 
     if (!project) {
-      detail.innerHTML = '<div class="project-not-found"><span class="section-label">404 / Project</span><h1>Project not found.</h1><a class="btn primary" href="preview.html#projects">Back to projects</a></div>';
+      detail.innerHTML = '<div class="project-not-found"><span class="section-label">404 / Project</span><h1>Project not found.</h1><a class="btn primary" href="index.html#projects">Back to projects</a></div>';
       document.title = 'Project not found — Akash';
     } else {
       document.title = `${project.name} — Akash`;
       detail.innerHTML = `
         <header class="project-detail-header">
           <div>
-            <div class="section-label">Project / ${String(projects.indexOf(project) + 1).padStart(2, '0')}</div>
-            <h1>${project.name}</h1>
+            <div class="section-label">Project / ${String(portfolioProjects.indexOf(project) + 1).padStart(2, '0')}</div>
+            <div class="project-title-line">${project.icon ? `<img class="project-app-icon" src="${project.icon}" alt="${project.name} app icon">` : ''}<h1>${project.name}</h1></div>
             <p>${project.details || project.description}</p>
           </div>
           <div class="project-detail-actions">

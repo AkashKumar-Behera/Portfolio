@@ -384,6 +384,22 @@ h2 {
   letter-spacing: -.035em;
 }
 
+.project-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.project-card-icon {
+  width: 54px;
+  height: 54px;
+  flex: 0 0 54px;
+  object-fit: cover;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--surface-2);
+}
+
 .project h3 a {
   color: inherit;
   transition: color 0.2s ease;
@@ -656,6 +672,23 @@ h2 {
   margin-bottom: 20px;
 }
 
+.project-title-line {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.project-app-icon {
+  width: 76px;
+  height: 76px;
+  flex: 0 0 76px;
+  object-fit: cover;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: var(--surface);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, .35);
+}
+
 .project-detail-header p {
   max-width: 720px;
   color: var(--muted);
@@ -748,6 +781,18 @@ h2 {
 
   .project-detail-header p {
     font-size: 16px;
+  }
+
+  .project-title-line {
+    align-items: flex-start;
+    gap: 14px;
+  }
+
+  .project-app-icon {
+    width: 54px;
+    height: 54px;
+    flex-basis: 54px;
+    border-radius: 14px;
   }
 
   .project-detail-actions {
@@ -1084,6 +1129,13 @@ footer {
   .project {
     min-height: auto;
     padding: 22px;
+  }
+
+  .project-card-icon {
+    width: 44px;
+    height: 44px;
+    flex-basis: 44px;
+    border-radius: 10px;
   }
 
   .modal-gallery {
