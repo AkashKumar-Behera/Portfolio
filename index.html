@@ -60,12 +60,15 @@
           <p>
             I'm Akash, a Full Stack Web Developer who enjoys turning ideas into working products. Building something from scratch is how I learn best — I get to see the logic behind the technology, understand the problems that come with it, and take that knowledge into whatever I build next.
           </p>
-          <p>
+          <div class="about-more" id="aboutMore">
+            <p>
             I usually start with a prototype, learn from what breaks, and then iterate on the architecture and implementation. I enjoy the process of solving problems that initially seem difficult and eventually making them work reliably for real users.
-          </p>
-          <p>
+            </p>
+            <p>
             I'm currently pursuing a B.Tech after completing my Diploma in Computer Science, and I spend most of my time building web applications and exploring new technologies across the stack.
-          </p>
+            </p>
+          </div>
+          <button class="read-more-btn" id="aboutToggle" type="button" aria-expanded="false">Read more <span>↘</span></button>
         </div>
       </div>
     </section>
@@ -175,6 +178,8 @@
     const portfolioProjects = JSON.parse(localStorage.getItem('akash-portfolio-projects') || 'null') || projects;
     const menuToggle = document.getElementById('menuToggle');
     const navLinks = document.getElementById('navLinks');
+    const aboutToggle = document.getElementById('aboutToggle');
+    const aboutMore = document.getElementById('aboutMore');
 
     menuToggle.addEventListener('click', () => {
       const isOpen = navLinks.classList.toggle('open');
@@ -187,6 +192,12 @@
       menuToggle.classList.remove('open');
       menuToggle.setAttribute('aria-expanded', 'false');
     }));
+
+    aboutToggle.addEventListener('click', () => {
+      const expanded = aboutMore.classList.toggle('visible');
+      aboutToggle.setAttribute('aria-expanded', String(expanded));
+      aboutToggle.innerHTML = expanded ? 'Read less <span>↗</span>' : 'Read more <span>↘</span>';
+    });
     const stackItems = [
       ['Flutter', 'flutter', '#02569B'],
       ['Kotlin', 'kotlin', '#7F52FF'],
@@ -211,7 +222,7 @@
       ['Git', 'git', '#F05032']
     ];
 
-    document.getElementById('stackGrid').innerHTML = stackItems.map(([name, icon, color]) => {
+    const makeStackItem = ([name, icon, color]) => {
       const iconUrl = icon === 'dokploy' ? 'assets/dokploy.svg' : `https://cdn.simpleicons.org/${icon}/${color.slice(1)}`;
       const colorUrl = icon === 'dokploy' ? 'assets/dokploy.svg' : `https://cdn.simpleicons.org/${icon}/${color.slice(1)}`;
       return `
@@ -220,11 +231,12 @@
         <img class="stack-icon-brand" src="${colorUrl}" alt="" loading="lazy">
         <span>${name}</span>
       </span>`;
-    }).join('');
+    };
+    document.getElementById('stackGrid').innerHTML = stackItems.map(makeStackItem).join('');
 
     function renderProjects() {
-      projectsGrid.innerHTML = portfolioProjects.map((project, index) => `
-        <article class="project project-clickable" data-project="${project.id}" tabindex="0" role="button" aria-label="View ${project.name} details">
+      const makeCard = (project, index) => `
+        <article class="project project-clickable ${index === 0 ? 'featured-project' : ''}" data-project="${project.id}" tabindex="0" role="button" aria-label="View ${project.name} details">
           <div>
             <div class="project-header">
               <span class="project-number">${String(index + 1).padStart(2, '0')}</span>
@@ -240,7 +252,8 @@
             <div class="project-tech">${project.tags.join(' · ')}</div>
             <span class="project-expand-hint">Click to expand ↘</span>
           </div>
-        </article>`).join('');
+        </article>`;
+      projectsGrid.innerHTML = portfolioProjects.map(makeCard).join('');
 
       projectsGrid.querySelectorAll('.project').forEach(card => {
         const project = portfolioProjects.find(item => item.id === card.dataset.project);
@@ -254,6 +267,7 @@
           }
         });
       });
+
     }
 
     renderProjects();
