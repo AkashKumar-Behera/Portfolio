@@ -629,6 +629,144 @@ h2 {
   color: var(--accent-2);
 }
 
+/* Dedicated project detail page */
+.project-detail-page {
+  min-height: 100vh;
+  background: radial-gradient(circle at 80% 0%, rgba(124, 58, 237, .12), transparent 34%), var(--bg);
+}
+
+.nav-back {
+  font-size: 13px;
+}
+
+.project-detail {
+  padding: 90px 0 110px;
+}
+
+.project-detail-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 40px;
+  padding-bottom: 54px;
+}
+
+.project-detail-header h1 {
+  max-width: 760px;
+  margin-bottom: 20px;
+}
+
+.project-detail-header p {
+  max-width: 720px;
+  color: var(--muted);
+  font-size: 18px;
+}
+
+.project-detail-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  flex-shrink: 0;
+}
+
+.project-detail-content {
+  display: grid;
+  grid-template-columns: minmax(0, 1.7fr) minmax(260px, .8fr);
+  gap: 20px;
+  align-items: start;
+}
+
+.project-detail-gallery {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.project-detail-gallery figure {
+  margin: 0;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--surface);
+}
+
+.project-detail-gallery figure:first-child {
+  grid-column: 1 / -1;
+}
+
+.project-detail-gallery img {
+  display: block;
+  width: 100%;
+  max-height: 540px;
+  object-fit: cover;
+  object-position: top center;
+}
+
+.project-detail-gallery figcaption {
+  padding: 11px 14px;
+  color: var(--muted);
+  font-size: 12px;
+  border-top: 1px solid var(--line);
+}
+
+.project-detail-sidebar {
+  display: grid;
+  gap: 16px;
+}
+
+.project-detail-card {
+  padding: 22px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--surface);
+}
+
+.project-detail-card p {
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.detail-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.project-not-found {
+  padding: 80px 0;
+}
+
+@media (max-width: 760px) {
+  .project-detail {
+    padding: 54px 0 70px;
+  }
+
+  .project-detail-header,
+  .project-detail-content {
+    display: block;
+  }
+
+  .project-detail-header p {
+    font-size: 16px;
+  }
+
+  .project-detail-actions {
+    margin-top: 24px;
+  }
+
+  .project-detail-gallery {
+    grid-template-columns: 1fr;
+  }
+
+  .project-detail-gallery figure:first-child {
+    grid-column: auto;
+  }
+
+  .project-detail-sidebar {
+    margin-top: 16px;
+  }
+}
+
 .modal-features-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);

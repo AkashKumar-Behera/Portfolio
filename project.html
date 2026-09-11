@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Project details — Akash portfolio">
+  <title>Project — Akash</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="project-detail-page">
+  <nav>
+    <div class="container nav-inner">
+      <a class="logo" href="preview.html">Akash<span>.</span></a>
+      <a class="btn nav-back" href="preview.html#projects">← Back to projects</a>
+    </div>
+  </nav>
+
+  <main id="projectDetail" class="project-detail container" aria-live="polite"></main>
+
+  <script src="projects.js"></script>
+  <script>
+    const project = projects.find(item => item.id === new URLSearchParams(window.location.search).get('id'));
+    const detail = document.getElementById('projectDetail');
+
+    if (!project) {
+      detail.innerHTML = '<div class="project-not-found"><span class="section-label">404 / Project</span><h1>Project not found.</h1><a class="btn primary" href="preview.html#projects">Back to projects</a></div>';
+      document.title = 'Project not found — Akash';
+    } else {
+      document.title = `${project.name} — Akash`;
+      detail.innerHTML = `
+        <header class="project-detail-header">
+          <div>
+            <div class="section-label">Project / ${String(projects.indexOf(project) + 1).padStart(2, '0')}</div>
+            <h1>${project.name}</h1>
+            <p>${project.details || project.description}</p>
+          </div>
+          <div class="project-detail-actions">
+            ${project.github ? `<a class="btn primary" href="${project.github}" target="_blank" rel="noreferrer">GitHub ↗</a>` : ''}
+            ${project.live ? `<a class="btn" href="${project.live}" target="_blank" rel="noreferrer">Live preview ↗</a>` : ''}
+          </div>
+        </header>
+        <section class="project-detail-content">
+          <div class="project-detail-gallery">
+            ${project.images.length ? project.images.map(image => `<figure><img src="${image}" alt="${project.name} preview" loading="lazy"><figcaption>Project preview</figcaption></figure>`).join('') : '<div class="empty-gallery">Project images will appear here when added from <code>admin.html</code>.</div>'}
+          </div>
+          <aside class="project-detail-sidebar">
+            <div class="project-detail-card"><span class="section-label">Built with</span><div class="detail-tags">${project.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}</div></div>
+            <div class="project-detail-card"><span class="section-label">Overview</span><p>${project.description}</p></div>
+          </aside>
+        </section>`;
+    }
+  </script>
+</body>
+</html>
