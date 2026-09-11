@@ -36,8 +36,8 @@
             <p>${project.details || project.description}</p>
           </div>
           <div class="project-detail-actions">
-            ${project.github ? `<a class="btn primary" href="${project.github}" target="_blank" rel="noreferrer">GitHub ↗</a>` : ''}
-            ${project.live ? `<a class="btn" href="${project.live}" target="_blank" rel="noreferrer">Live preview ↗</a>` : ''}
+            ${project.github ? `<a class="btn primary" href="${project.github}" target="_blank" rel="noreferrer"><span>GitHub</span><svg style="margin-left:6px;flex-shrink:0" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7"/><path d="M7 7h10v10"/></svg></a>` : ''}
+            ${project.live ? `<a class="btn" href="${project.live}" target="_blank" rel="noreferrer"><span>Live preview</span><svg style="margin-left:6px;flex-shrink:0" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7"/><path d="M7 7h10v10"/></svg></a>` : ''}
           </div>
         </header>
         <section class="project-detail-content">
